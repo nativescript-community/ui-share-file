@@ -4,7 +4,7 @@ import * as fs from 'tns-core-modules/file-system';
 export class ShareFile {
     open(args: any): void {
       if (args.path) {
-        try {
+//         try {
           let intent = new android.content.Intent();
           let map = android.webkit.MimeTypeMap.getSingleton();
           let mimeType = map.getMimeTypeFromExtension(this.fileExtension(args.path));
@@ -23,12 +23,12 @@ export class ShareFile {
 
           application.android.currentContext.startActivity(android.content.Intent.createChooser(intent, args.intentTitle ? args.intentTitle : 'Open file:'));
 
-        }
-        catch (e) {
-            console.log('ShareFile: Android intent failed');
-        }
+//         }
+//         catch (e) {
+//             console.log('ShareFile: Android intent failed');
+//         }
       } else {
-        console.log('ShareFile: Please add a file path');
+        throw new Error('missing_arg_path')
       }
 
     }
