@@ -12,72 +12,80 @@ export class ShareFile {
 
     private controller: UIDocumentInteractionController;
     private delegate: UIDocumentInteractionControllerDelegateImpl2;
+
+    resolve;
     open(args: ShareOptions) {
-        if (!args.path) {
-            return Promise.reject(new Error("missing_arg_path"));
-        }
-        try {
-            const appPath = this.getCurrentAppPath();
-            const path = args.path.replace("~", appPath);
-            const url = NSURL.fileURLWithPath(path);
-            const animated = args.animated !== false;
-
-            const controller = (this.controller = UIDocumentInteractionController.interactionControllerWithURL(
-                url
-            ));
-            this.controller.UTI = args.type
-                ? args.type
-                : "public.data, public.content";
-            controller.name = args.title;
-            const presentingController = app.ios.rootController;
-            const delegate = UIDocumentInteractionControllerDelegateImpl2.initWithOwnerController(
-                this,
-                presentingController
-            );
-            this.delegate = delegate;
-            controller.delegate = delegate;
-
-            // console.log(
-            //     "open",
-            //     appPath,
-            //     args.path,
-            //     path,
-            //     url,
-            //     url.absoluteString,
-            //     presentingController,
-            //     controller,
-            //     delegate
-            // );
-
-            let rect;
-            if (args.rect) {
-                rect = CGRectMake(
-                    args.rect.x ? args.rect.x : 0,
-                    args.rect.y ? args.rect.y : 0,
-                    args.rect.width ? args.rect.width : 0,
-                    args.rect.height ? args.rect.height : 0
-                );
-            } else {
-                rect = CGRectMake(0, 0, 0, 0);
+        return new Promise((resolve, reject) => {
+            if (!args.path) {
+                return reject(new Error("missing_arg_path"));
             }
-            let result = false;
-            if (!!args.options) {
-                result = controller.presentOptionsMenuFromRectInViewAnimated(
-                    rect,
-                    presentingController.view,
-                    animated
+            try {
+                const appPath = this.getCurrentAppPath();
+                const path = args.path.replace("~", appPath);
+                const url = NSURL.fileURLWithPath(path);
+                const animated = args.animated !== false;
+
+                const controller = (this.controller = UIDocumentInteractionController.interactionControllerWithURL(
+                    url
+                ));
+                this.controller.UTI = args.type
+                    ? args.type
+                    : "public.data, public.content";
+                controller.name = args.title;
+                const presentingController = app.ios.rootController;
+                const delegate = UIDocumentInteractionControllerDelegateImpl2.initWithOwnerController(
+                    this,
+                    presentingController
                 );
-            } else {
-                result = controller.presentOpenInMenuFromRectInViewAnimated(
-                    rect,
-                    presentingController.view,
-                    animated
-                );
+                this.delegate = delegate;
+                controller.delegate = delegate;
+
+                // console.log(
+                //     "open",
+                //     appPath,
+                //     args.path,
+                //     path,
+                //     url,
+                //     url.absoluteString,
+                //     presentingController,
+                //     controller,
+                //     delegate
+                // );
+
+                let rect;
+                if (args.rect) {
+                    rect = CGRectMake(
+                        args.rect.x ? args.rect.x : 0,
+                        args.rect.y ? args.rect.y : 0,
+                        args.rect.width ? args.rect.width : 0,
+                        args.rect.height ? args.rect.height : 0
+                    );
+                } else {
+                    rect = CGRectMake(0, 0, 0, 0);
+                }
+                let result = false;
+                if (!!args.options) {
+                    result = controller.presentOptionsMenuFromRectInViewAnimated(
+                        rect,
+                        presentingController.view,
+                        animated
+                    );
+                } else {
+                    result = controller.presentOpenInMenuFromRectInViewAnimated(
+                        rect,
+                        presentingController.view,
+                        animated
+                    );
+                }
+                if (!result) {
+                    return reject(new Error("failed_opening"));
+                }
+                this.resolve = resolve
+                // return Promise.resolve(result);
+            } catch (e) {
+                return reject(e);
             }
-            return Promise.resolve(result);
-        } catch (e) {
-            return Promise.reject(e);
-        }
+        });
     }
     dismissed() {
         // console.log("ShareFile", "dismissed");
@@ -86,6 +94,10 @@ export class ShareFile {
             this.controller = null;
         }
         this.delegate = null;
+        if (this.resolve) {
+            this.resolve();
+            this.resolve = null;
+        }
     }
 
     private getCurrentAppPath(): string {
