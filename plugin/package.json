@@ -1,0 +1,34 @@
+{
+    "name": "nativescript-akylas-share-file",
+    "version": "1.1.1",
+    "description": "Send/share file to other apps.",
+    "main": "share-file",
+    "typings": "index.d.ts",
+    "repository": "farfromrefug/nativescript-share-file",
+    "nativescript": {
+        "platforms": {
+            "android": "3.0.0",
+            "ios": "3.0.0"
+        }
+    },
+    "keywords": [
+        "NativeScript",
+        "JavaScript",
+        "Android",
+        "file",
+        "share",
+        "iOS"
+    ],
+    "author": {
+        "name": "Leon Borlinghaus",
+        "email": "lb@braune-digital.com"
+    },
+    "bugs": {
+        "url": "https://github.com/farfromrefug/nativescript-share-file/issues"
+    },
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/farfromrefug/nativescript-share-file",
+    "readmeFilename": "README.md",
+    "dependencies": {},
+    "bootstrapper": "nativescript-plugin-seed"
+}

@@ -4,7 +4,7 @@ Send/Share files to other apps.
 
 Android Intent, IOS InteractionController:
 
-<img src="https://github.com/braune-digital/nativescript-share-file/blob/master/preview/preview-android.png?raw=true" width="250"> .   <img src="https://github.com/braune-digital/nativescript-share-file/blob/master/preview/preview-ios.png?raw=true" width="250">
+<img src="https://github.com/farfromrefug/nativescript-share-file/blob/master/preview/preview-android.png?raw=true" width="250"> .   <img src="https://github.com/farfromrefug/nativescript-share-file/blob/master/preview/preview-ios.png?raw=true" width="250">
 
 
 
@@ -13,7 +13,7 @@ Android Intent, IOS InteractionController:
 Install the plugin in your app.
 
 ~~~
-npm install nativescript-share-file
+npm install nativescript-akylas-share-file
 ~~~
 
 ## Usage 
@@ -21,7 +21,7 @@ npm install nativescript-share-file
 Info: Shared files should be in the `documents` path.
 	
 ```TypeScript
-    import { ShareFile } from 'nativescript-share-file';
+    import { ShareFile } from 'nativescript-akylas-share-file';
     import * as fs from 'tns-core-modules/file-system';
 
     export class TestClass{
