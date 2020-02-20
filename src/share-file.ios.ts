@@ -1,6 +1,7 @@
 import { ShareOptions } from "nativescript-akylas-share-file";
 import * as app from "@nativescript/core/application";
 
+let controller: UIDocumentInteractionController;
 export class ShareFile {
     private controller: UIDocumentInteractionController;
     private delegate: UIDocumentInteractionControllerDelegateImpl;
@@ -16,8 +17,7 @@ export class ShareFile {
                 const path = args.path.replace("~", appPath);
                 const url = NSURL.fileURLWithPath(path);
                 const animated = args.animated !== false;
-                console.log('url test', url.checkResourceIsReachableAndReturnError());
-                const controller = UIDocumentInteractionController.interactionControllerWithURL(
+                controller = UIDocumentInteractionController.interactionControllerWithURL(
                     url
                 );
                 controller.UTI = args?.type || "public.data, public.content";
@@ -87,6 +87,7 @@ export class ShareFile {
         if (this.controller) {
             this.controller.delegate = null;
             this.controller = null;
+            controller = null;
         }
         if (this.delegate) {
             this.delegate = null;
