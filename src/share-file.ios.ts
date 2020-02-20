@@ -1,13 +1,14 @@
 import { ShareOptions } from "nativescript-akylas-share-file";
 import * as app from "@nativescript/core/application";
 
-let controller: UIDocumentInteractionController;
+// let controller: UIDocumentInteractionController;
 export class ShareFile {
     private controller: UIDocumentInteractionController;
     private delegate: UIDocumentInteractionControllerDelegateImpl;
     private resolve: Function;
     private url: NSURL;
     open(args: ShareOptions) {
+        let storedController: UIDocumentInteractionController;
         return new Promise((resolve, reject) => {
             if (!args.path) {
                 return reject(new Error("missing_arg_path"));
@@ -17,30 +18,17 @@ export class ShareFile {
                 const path = args.path.replace("~", appPath);
                 const url = NSURL.fileURLWithPath(path);
                 const animated = args.animated !== false;
-                controller = UIDocumentInteractionController.interactionControllerWithURL(
+                const controller = (storedController = UIDocumentInteractionController.interactionControllerWithURL(
                     url
-                );
+                ));
                 controller.UTI = args?.type || "public.data, public.content";
                 controller.name = args.title;
                 const presentingController = app.ios.rootController;
                 const delegate = UIDocumentInteractionControllerDelegateImpl.new().initWithOwnerController(
-                    new WeakRef(this),
+                    this,
                     presentingController
                 );
                 controller.delegate = delegate;
-
-                // console.log(
-                //     "open",
-                //     appPath,
-                //     args.path,
-                //     path,
-                //     url,
-                //     url.absoluteString,
-                //     presentingController,
-                //     controller,
-                //     delegate
-                // );
-
                 let rect;
                 if (args.rect) {
                     rect = CGRectMake(
@@ -67,6 +55,7 @@ export class ShareFile {
                     );
                 }
                 if (!result) {
+                    storedController = null;
                     return reject(new Error("failed_opening"));
                 }
 
@@ -76,10 +65,13 @@ export class ShareFile {
                 this.controller = controller;
                 this.delegate = delegate;
                 this.url = url;
-                // return Promise.resolve(result);
             } catch (e) {
+                storedController = null;
                 return reject(e);
             }
+        }).then(result => {
+            storedController = null;
+            return result;
         });
     }
     dismissed() {
@@ -87,7 +79,7 @@ export class ShareFile {
         if (this.controller) {
             this.controller.delegate = null;
             this.controller = null;
-            controller = null;
+            // controller = null;
         }
         if (this.delegate) {
             this.delegate = null;
@@ -119,7 +111,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
     implements UIDocumentInteractionControllerDelegate {
     public static ObjCProtocols = [UIDocumentInteractionControllerDelegate];
     controller: UIViewController;
-    private _owner: WeakRef<ShareFile>;
+    private _owner: ShareFile;
 
     // public getViewController(): UIViewController {
     // return app.ios.rootController;
@@ -134,7 +126,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         return super.new() as UIDocumentInteractionControllerDelegateImpl;
     }
     public initWithOwnerController(
-        owner: WeakRef<ShareFile>,
+        owner: ShareFile,
         controller: UIViewController
     ) {
         this._owner = owner;
@@ -150,7 +142,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         //     "documentInteractionControllerWillBeginSendingToApplication",
         //     app
         // );
-        const owner = this._owner && this._owner.get();
+        const owner = this._owner;
         if (owner) {
             owner.dismissed();
         }
@@ -160,7 +152,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         controller: UIDocumentInteractionController
     ): void {
         // console.log("documentInteractionControllerDidDismissOpenInMenu");
-        const owner = this._owner && this._owner.get();
+        const owner = this._owner;
         if (owner) {
             owner.dismissed();
         }
@@ -170,7 +162,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         controller: UIDocumentInteractionController
     ): void {
         // console.log("documentInteractionControllerDidDismissOptionsMenu");
-        const owner = this._owner && this._owner.get();
+        const owner = this._owner;
         if (owner) {
             owner.dismissed();
         }
