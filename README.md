@@ -22,7 +22,7 @@ Info: Shared files should be in the `documents` path.
 	
 ```TypeScript
     import { ShareFile } from 'nativescript-akylas-share-file';
-    import * as fs from 'tns-core-modules/file-system';
+    import * as fs from '@nativescript/core/file-system';
 
     export class TestClass{
 

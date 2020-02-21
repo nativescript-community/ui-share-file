@@ -2,5 +2,6 @@
   xmlns:ui="nativescript-share-file">
   <StackLayout class="p-20">
     <Label text="nativescript share file" class="t-20 text-center c-black" textWrap="true"/>
+    <Button text="run test" tap="onTap"/>
   </StackLayout>
 </Page>
