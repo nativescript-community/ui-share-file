@@ -1,14 +1,20 @@
 import { ShareOptions } from "nativescript-akylas-share-file";
 import * as app from "@nativescript/core/application";
 
-// let controller: UIDocumentInteractionController;
+// we need to store both the controller and the delegate.
+// UIDocumentInteractionController is not retained by iOS
+// the delegate is not retained by the controller
+let storedData: {
+    [k: number]: {
+        controller: UIDocumentInteractionController;
+        delegate: UIDocumentInteractionControllerDelegateImpl;
+    };
+} = {};
+
 export class ShareFile {
-    private controller: UIDocumentInteractionController;
-    private delegate: UIDocumentInteractionControllerDelegateImpl;
+    myId = Date.now();
     private resolve: Function;
-    private url: NSURL;
     open(args: ShareOptions) {
-        let storedController: UIDocumentInteractionController;
         return new Promise((resolve, reject) => {
             if (!args.path) {
                 return reject(new Error("missing_arg_path"));
@@ -18,9 +24,9 @@ export class ShareFile {
                 const path = args.path.replace("~", appPath);
                 const url = NSURL.fileURLWithPath(path);
                 const animated = args.animated !== false;
-                const controller = (storedController = UIDocumentInteractionController.interactionControllerWithURL(
+                const controller = UIDocumentInteractionController.interactionControllerWithURL(
                     url
-                ));
+                );
                 controller.UTI = args?.type || "public.data, public.content";
                 controller.name = args.title;
                 const presentingController = app.ios.rootController;
@@ -55,38 +61,21 @@ export class ShareFile {
                     );
                 }
                 if (!result) {
-                    storedController = null;
                     return reject(new Error("failed_opening"));
                 }
-
-                // store referecences
-                // console.log("storing references", this);
+                storedData[this.myId] = {
+                    controller,
+                    delegate,
+                };
                 this.resolve = resolve;
-                this.controller = controller;
-                this.delegate = delegate;
-                this.url = url;
             } catch (e) {
-                storedController = null;
                 return reject(e);
             }
-        }).then(result => {
-            storedController = null;
-            return result;
+        }).finally(() => {
+            delete storedData[this.myId];
         });
     }
     dismissed() {
-        // console.log("ShareFile", "dismissed");
-        if (this.controller) {
-            this.controller.delegate = null;
-            this.controller = null;
-            // controller = null;
-        }
-        if (this.delegate) {
-            this.delegate = null;
-        }
-        if (this.url) {
-            this.url = null;
-        }
         if (this.resolve) {
             this.resolve();
             this.resolve = null;
@@ -113,15 +102,6 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
     controller: UIViewController;
     private _owner: ShareFile;
 
-    // public getViewController(): UIViewController {
-    // return app.ios.rootController;
-
-    // const app = ShareFile.getter(
-    //   UIApplication,
-    //   UIApplication.sharedApplication
-    // );
-    // return app.keyWindow.rootViewController;
-    // }
     static new(): UIDocumentInteractionControllerDelegateImpl {
         return super.new() as UIDocumentInteractionControllerDelegateImpl;
     }
