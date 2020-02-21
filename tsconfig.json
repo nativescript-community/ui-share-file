@@ -8,7 +8,7 @@
         "noLib": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "lib": ["es6", "dom"],
+        "lib": ["es6", "dom", "es2018.promise"],
         "sourceMap": true,
         "pretty": true,
         "allowUnreachableCode": false,
@@ -24,8 +24,8 @@
         "rootDir": "src",
         "paths": {
             "nativescript-akylas-share-file": ["./src"],
-            "tns-core-modules": ["./node_modules/@nativescript/core"],
-            "tns-core-modules/*": ["./node_modules/@nativescript/core/*"],
+            "@nativescript/core": ["./node_modules/@nativescript/core"],
+            "@nativescript/core/*": ["./node_modules/@nativescript/core/*"],
             "*": ["./node_modules/*"]
         }
     },
