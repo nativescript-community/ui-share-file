@@ -42,7 +42,7 @@ Info: Shared files should be in the `documents` path.
 
             this.shareFile.open( { 
                 path: this.path, 
-                intentTitle: 'Open text file with:', // optional Android
+                title: 'Open text file with:', // optional Android
                 rect: { // optional iPad
                     x: 110,
                     y: 110,
@@ -66,7 +66,7 @@ Path to the file which will be shared.
 `String`: Required
 
 
-#### intentTitle
+#### title
 Title for the intent on Android. 
 
 `String`: (Optional) 
