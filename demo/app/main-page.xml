@@ -1,5 +1,5 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded" class="page"
-  xmlns:ui="nativescript-share-file">
+  xmlns:ui="@nativescript-community/ui-share-file">
   <StackLayout class="p-20">
     <Label text="nativescript share file" class="t-20 text-center c-black" textWrap="true"/>
     <Button text="run test" tap="onTap"/>

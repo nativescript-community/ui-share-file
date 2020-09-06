@@ -1,4 +1,4 @@
-var ShareFile = require("nativescript-share-file").ShareFile;
+var ShareFile = require("@nativescript-community/ui-share-file").ShareFile;
 var shareFile = new ShareFile();
 
 describe("greet function", function() {

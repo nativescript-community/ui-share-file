@@ -6,7 +6,7 @@
     }
   },
   "dependencies": {
-    "nativescript-akylas-share-file": "file:../plugin",
+    "@nativescript-community/ui-share-file": "file:../plugin",
     "@nativescript/theme": "^2.3.2",
     "@nativescript/core": "^6.4.1"
   },

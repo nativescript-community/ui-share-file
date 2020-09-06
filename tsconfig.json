@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "es2015",
+        "target": "es2017",
+        "module": "esnext",
         "moduleResolution": "node",
-        "declaration": true,
         "removeComments": false,
+        "declaration": true,
         "noLib": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -23,11 +23,14 @@
         "outDir": "./plugin",
         "rootDir": "src",
         "paths": {
-            "nativescript-akylas-share-file": ["./src"],
+            "@nativescript-community/ui-share-file": ["./src"],
             "@nativescript/core": ["./node_modules/@nativescript/core"],
             "@nativescript/core/*": ["./node_modules/@nativescript/core/*"],
             "*": ["./node_modules/*"]
-        }
+        },
+        "plugins": [
+          { "transform": "./node_modules/@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }
+        ]
     },
     "include": ["src/**/*.ts", "references.d.ts", "src/references.d.ts"],
     "exclude": ["node_modules", ".git", "dist"],

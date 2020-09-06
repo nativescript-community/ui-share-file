@@ -2,7 +2,7 @@ import * as observable from '@nativescript/core/data/observable';
 import * as pages from '@nativescript/core/ui/page';
 import {HelloWorldModel} from './main-view-model';
 
-import { ShareFile } from "nativescript-akylas-share-file";
+import { ShareFile } from "@nativescript-community/ui-share-file";
 import * as fs from "@nativescript/core/file-system";
 // Event handler for Page 'loaded' event attached in main-page.xml
 export function pageLoaded(args: observable.EventData) {

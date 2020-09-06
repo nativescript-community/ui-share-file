@@ -1,10 +1,10 @@
-import { ShareOptions } from "nativescript-akylas-share-file";
-import * as app from "@nativescript/core/application";
+import { ShareOptions } from '@nativescript-community/ui-share-file';
+import {Application} from '@nativescript/core';
 
 // we need to store both the controller and the delegate.
 // UIDocumentInteractionController is not retained by iOS
 // the delegate is not retained by the controller
-let storedData: {
+const storedData: {
     [k: number]: {
         controller: UIDocumentInteractionController;
         delegate: UIDocumentInteractionControllerDelegateImpl;
@@ -17,19 +17,19 @@ export class ShareFile {
     open(args: ShareOptions) {
         return new Promise((resolve, reject) => {
             if (!args.path) {
-                return reject(new Error("missing_arg_path"));
+                return reject(new Error('missing_arg_path'));
             }
             try {
                 const appPath = this.getCurrentAppPath();
-                const path = args.path.replace("~", appPath);
+                const path = args.path.replace('~', appPath);
                 const url = NSURL.fileURLWithPath(path);
                 const animated = args.animated !== false;
                 const controller = UIDocumentInteractionController.interactionControllerWithURL(
                     url
                 );
-                controller.UTI = args?.type || "public.data, public.content";
+                controller.UTI = args?.type || 'public.data, public.content';
                 controller.name = args.title;
-                const presentingController = app.ios.rootController;
+                const presentingController = Application.ios.rootController;
                 const delegate = UIDocumentInteractionControllerDelegateImpl.new().initWithOwnerController(
                     this,
                     presentingController
@@ -61,7 +61,7 @@ export class ShareFile {
                     );
                 }
                 if (!result) {
-                    return reject(new Error("failed_opening"));
+                    return reject(new Error('failed_opening'));
                 }
                 storedData[this.myId] = {
                     controller,
@@ -84,7 +84,7 @@ export class ShareFile {
 
     private getCurrentAppPath(): string {
         const currentDir = __dirname;
-        const tnsModulesIndex = currentDir.indexOf("/tns_modules");
+        const tnsModulesIndex = currentDir.indexOf('/tns_modules');
 
         // Module not hosted in ~/tns_modules when bundled. Use current dir.
         let appPath = currentDir;
@@ -96,6 +96,7 @@ export class ShareFile {
     }
 }
 
+@NativeClass
 class UIDocumentInteractionControllerDelegateImpl extends NSObject
     implements UIDocumentInteractionControllerDelegate {
     public static ObjCProtocols = [UIDocumentInteractionControllerDelegate];
