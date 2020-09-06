@@ -1,10 +1,10 @@
 {
-    "name": "nativescript-akylas-share-file",
+    "name": "@nativescript-community/ui-share-file",
     "version": "1.1.4",
     "description": "Send/share file to other apps.",
     "main": "share-file",
     "typings": "index.d.ts",
-    "repository": "farfromrefug/nativescript-share-file",
+    "repository": "nativescript-community/ui-share-file",
     "nativescript": {
         "platforms": {
             "android": "3.0.0",
@@ -24,10 +24,10 @@
         "email": "lb@braune-digital.com"
     },
     "bugs": {
-        "url": "https://github.com/farfromrefug/nativescript-share-file/issues"
+        "url": "https://github.com/nativescript-community/ui-share-file/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/farfromrefug/nativescript-share-file",
+    "homepage": "https://github.com/nativescript-community/ui-share-file",
     "readmeFilename": "README.md",
     "dependencies": {},
     "bootstrapper": "nativescript-plugin-seed"
