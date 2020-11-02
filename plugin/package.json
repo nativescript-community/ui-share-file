@@ -5,6 +5,7 @@
     "main": "share-file",
     "typings": "index.d.ts",
     "repository": "nativescript-community/ui-share-file",
+    "sideEffects": false,
     "nativescript": {
         "platforms": {
             "android": "3.0.0",
