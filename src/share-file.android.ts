@@ -1,8 +1,4 @@
-import {
-    AndroidActivityResultEventData,
-    AndroidApplication,
-    android as androidApp,
-} from '@nativescript/core/application';
+import { AndroidActivityResultEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
 import { File, Folder } from '@nativescript/core/file-system';
 
 const REQUEST_CODE = 2343;
@@ -14,65 +10,39 @@ export class ShareFile {
                     const path = args.path;
                     const intent = new android.content.Intent();
                     const map = android.webkit.MimeTypeMap.getSingleton();
-                    const mimeType = map.getMimeTypeFromExtension(
-                        this.fileExtension(path)
-                    );
+                    const mimeType = map.getMimeTypeFromExtension(this.fileExtension(path));
 
-                    intent.addFlags(
-                        android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    );
+                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    const uris = new java.util.ArrayList();
-                    const uri = this._getUriForPath(
-                        path,
-                        '/' + this.fileName(path),
-                        androidApp.context
-                    );
-                    uris.add(uri);
+                    const uri = this._getUriForPath(path, '/' + this.fileName(path), androidApp.context);
+                    // uris.add(uri);
                     const builder = new android.os.StrictMode.VmPolicy.Builder();
                     android.os.StrictMode.setVmPolicy(builder.build());
 
-                    intent.setAction(
-                        android.content.Intent.ACTION_SEND_MULTIPLE
-                    );
-                    intent.setType('message/rfc822');
-                    intent.putParcelableArrayListExtra(
-                        android.content.Intent.EXTRA_STREAM,
-                        uris
-                    );
+                    intent.setAction(android.content.Intent.ACTION_SEND);
+                    intent.setType(args?.type || '*/*');
+                    intent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
+                    // intent.putParcelableArrayListExtra(
+                    //     android.content.Intent.EXTRA_STREAM,
+                    //     uris
+                    // );
 
-                    const activity =
-                        androidApp.foregroundActivity ||
-                        androidApp.startActivity;
+                    const activity = androidApp.foregroundActivity || androidApp.startActivity;
 
-                    const onActivityResultHandler = (
-                        data: AndroidActivityResultEventData
-                    ) => {
-                        androidApp.off(
-                            AndroidApplication.activityResultEvent,
-                            onActivityResultHandler
-                        );
+                    const onActivityResultHandler = (data: AndroidActivityResultEventData) => {
+                        androidApp.off(AndroidApplication.activityResultEvent, onActivityResultHandler);
                         if (data.requestCode === REQUEST_CODE) {
                             resolve(data.resultCode);
                         }
                     };
-                    androidApp.on(
-                        AndroidApplication.activityResultEvent,
-                        onActivityResultHandler
-                    );
+                    androidApp.on(AndroidApplication.activityResultEvent, onActivityResultHandler);
                     // activity.startActivityForResult(
                     //   new android.content.Intent(
                     //     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
                     //   ),
                     //   0
                     // );
-                    activity.startActivityForResult(
-                        android.content.Intent.createChooser(
-                            intent,
-                            args.title || 'Open file:'
-                        ),
-                        REQUEST_CODE
-                    );
+                    activity.startActivityForResult(android.content.Intent.createChooser(intent, args.title || 'Open file:'), REQUEST_CODE);
                 } catch (e) {
                     reject(e);
                 }
@@ -125,11 +95,7 @@ export class ShareFile {
         const localFileContents = localFile.readSync(function (e) {
             console.log(e);
         });
-        let cacheFileName = this._writeBytesToFile(
-            ctx,
-            fileName,
-            localFileContents
-        );
+        let cacheFileName = this._writeBytesToFile(ctx, fileName, localFileContents);
         if (cacheFileName.indexOf('file://') === -1) {
             cacheFileName = 'file://' + cacheFileName;
         }
@@ -173,10 +139,7 @@ export class ShareFile {
         }
     }
     toStringArray(arg) {
-        const arr = java.lang.reflect.Array.newInstance(
-            java.lang.String.class,
-            arg.length
-        );
+        const arr = java.lang.reflect.Array.newInstance(java.lang.String.class, arg.length);
         for (let i = 0; i < arg.length; i++) {
             arr[i] = arg[i];
         }
