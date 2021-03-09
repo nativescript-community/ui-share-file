@@ -1,5 +1,5 @@
 import { ShareOptions } from '@nativescript-community/ui-share-file';
-import {Application} from '@nativescript/core';
+import { Application } from '@nativescript/core';
 
 // we need to store both the controller and the delegate.
 // UIDocumentInteractionController is not retained by iOS
@@ -24,48 +24,30 @@ export class ShareFile {
                 const path = args.path.replace('~', appPath);
                 const url = NSURL.fileURLWithPath(path);
                 const animated = args.animated !== false;
-                const controller = UIDocumentInteractionController.interactionControllerWithURL(
-                    url
-                );
+                const controller = UIDocumentInteractionController.interactionControllerWithURL(url);
                 controller.UTI = args?.type || 'public.data, public.content';
                 controller.name = args.title;
                 const presentingController = Application.ios.rootController;
-                const delegate = UIDocumentInteractionControllerDelegateImpl.new().initWithOwnerController(
-                    this,
-                    presentingController
-                );
+                const delegate = UIDocumentInteractionControllerDelegateImpl.new().initWithOwnerController(this, presentingController);
                 controller.delegate = delegate;
                 let rect;
                 if (args.rect) {
-                    rect = CGRectMake(
-                        args.rect.x ? args.rect.x : 0,
-                        args.rect.y ? args.rect.y : 0,
-                        args.rect.width ? args.rect.width : 0,
-                        args.rect.height ? args.rect.height : 0
-                    );
+                    rect = CGRectMake(args.rect.x ? args.rect.x : 0, args.rect.y ? args.rect.y : 0, args.rect.width ? args.rect.width : 0, args.rect.height ? args.rect.height : 0);
                 } else {
                     rect = CGRectMake(0, 0, 0, 0);
                 }
                 let result = false;
                 if (!!args.options) {
-                    result = controller.presentOptionsMenuFromRectInViewAnimated(
-                        rect,
-                        presentingController.view,
-                        animated
-                    );
+                    result = controller.presentOptionsMenuFromRectInViewAnimated(rect, presentingController.view, animated);
                 } else {
-                    result = controller.presentOpenInMenuFromRectInViewAnimated(
-                        rect,
-                        presentingController.view,
-                        animated
-                    );
+                    result = controller.presentOpenInMenuFromRectInViewAnimated(rect, presentingController.view, animated);
                 }
                 if (!result) {
                     return reject(new Error('failed_opening'));
                 }
                 storedData[this.myId] = {
                     controller,
-                    delegate,
+                    delegate
                 };
                 this.resolve = resolve;
             } catch (e) {
@@ -97,8 +79,7 @@ export class ShareFile {
 }
 
 @NativeClass
-class UIDocumentInteractionControllerDelegateImpl extends NSObject
-    implements UIDocumentInteractionControllerDelegate {
+class UIDocumentInteractionControllerDelegateImpl extends NSObject implements UIDocumentInteractionControllerDelegate {
     public static ObjCProtocols = [UIDocumentInteractionControllerDelegate];
     controller: UIViewController;
     private _owner: ShareFile;
@@ -106,19 +87,13 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
     static new(): UIDocumentInteractionControllerDelegateImpl {
         return super.new() as UIDocumentInteractionControllerDelegateImpl;
     }
-    public initWithOwnerController(
-        owner: ShareFile,
-        controller: UIViewController
-    ) {
+    public initWithOwnerController(owner: ShareFile, controller: UIViewController) {
         this._owner = owner;
         this.controller = controller;
         return this;
     }
 
-    documentInteractionControllerWillBeginSendingToApplication(
-        controller: UIDocumentInteractionController,
-        app: string
-    ): void {
+    documentInteractionControllerWillBeginSendingToApplication(controller: UIDocumentInteractionController, app: string): void {
         // console.log(
         //     "documentInteractionControllerWillBeginSendingToApplication",
         //     app
@@ -129,9 +104,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         }
     }
 
-    documentInteractionControllerDidDismissOpenInMenu(
-        controller: UIDocumentInteractionController
-    ): void {
+    documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController): void {
         // console.log("documentInteractionControllerDidDismissOpenInMenu");
         const owner = this._owner;
         if (owner) {
@@ -139,9 +112,7 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         }
     }
 
-    documentInteractionControllerDidDismissOptionsMenu(
-        controller: UIDocumentInteractionController
-    ): void {
+    documentInteractionControllerDidDismissOptionsMenu(controller: UIDocumentInteractionController): void {
         // console.log("documentInteractionControllerDidDismissOptionsMenu");
         const owner = this._owner;
         if (owner) {
@@ -149,20 +120,14 @@ class UIDocumentInteractionControllerDelegateImpl extends NSObject
         }
     }
 
-    public documentInteractionControllerViewControllerForPreview(
-        controller: UIDocumentInteractionController
-    ) {
+    public documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) {
         return this.controller;
     }
 
-    public documentInteractionControllerViewForPreview(
-        controller: UIDocumentInteractionController
-    ) {
+    public documentInteractionControllerViewForPreview(controller: UIDocumentInteractionController) {
         return this.controller.view;
     }
-    public documentInteractionControllerRectForPreview(
-        controller: UIDocumentInteractionController
-    ) {
+    public documentInteractionControllerRectForPreview(controller: UIDocumentInteractionController) {
         return this.controller.view.bounds;
     }
 }
