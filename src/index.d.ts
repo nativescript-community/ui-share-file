@@ -10,6 +10,8 @@ export interface ShareOptions {
     options?: boolean;
     title?: string;
     type?: string;
+    // android only
+    dontGrantReadUri?: boolean;
 }
 export declare class ShareFile {
     open(args: ShareOptions): Promise<boolean>;

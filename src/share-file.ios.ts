@@ -20,6 +20,22 @@ export class ShareFile {
                 return reject(new Error('missing_arg_path'));
             }
             try {
+                if (Array.isArray(args.path)) {
+                    // we only support one shared file for now
+                    args.path = args.path[0];
+                    // const activityController = UIActivityViewController.alloc().initWithActivityItemsApplicationActivities(thingsToShare, null);
+                    // const presentViewController = activityController.popoverPresentationController;
+                    // if (presentViewController) {
+                    //     const page = Frame.topmost().currentPage;
+                    //     if (page && page.ios.navigationItem.rightBarButtonItems && page.ios.navigationItem.rightBarButtonItems.count > 0) {
+                    //         presentViewController.barButtonItem = page.ios.navigationItem.rightBarButtonItems[0];
+                    //     } else {
+                    //         presentViewController.sourceView = page.ios.view;
+                    //     }
+                    // }
+                    // Utils.ios.getVisibleViewController(getRootViewController()).presentViewControllerAnimatedCompletion(activityController, true, null);
+                }
+                // else {
                 const appPath = this.getCurrentAppPath();
                 const path = args.path.replace('~', appPath);
                 const url = NSURL.fileURLWithPath(path);
@@ -50,6 +66,7 @@ export class ShareFile {
                     delegate
                 };
                 this.resolve = resolve;
+                // }
             } catch (e) {
                 return reject(e);
             }
