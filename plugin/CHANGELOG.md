@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4](https://github.com/nativescript-community/ui-share-file/compare/v1.2.3...v1.2.4) (2022-10-18)
+
+
+### Bug Fixes
+
+* **android:** remove unused aar ([a505afe](https://github.com/nativescript-community/ui-share-file/commit/a505afe3f06aea9a33621db9117876daa995307f))
+
+
+
+
+
 ## [1.2.3](https://github.com/nativescript-community/ui-share-file/compare/v1.2.2...v1.2.3) (2021-06-03)
 
 **Note:** Version bump only for package @nativescript-community/ui-share-file
