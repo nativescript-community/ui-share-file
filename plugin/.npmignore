@@ -1,4 +1,5 @@
 *.map
 *.ts
+*.aar
 !*.d.ts
 tsconfig.json
