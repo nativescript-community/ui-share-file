@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/nativescript-community/ui-share-file/compare/v1.2.5...v1.3.0) (2023-02-22)
+
+### Features
+
+-   **android:** native-api-usage ([13ebb89](https://github.com/nativescript-community/ui-share-file/commit/13ebb89f2a6d83a1f4d17d9b04bc34662faeab59))
+
 ## [1.2.5](https://github.com/nativescript-community/ui-share-file/compare/v1.2.4...v1.2.5) (2022-10-18)
 
 **Note:** Version bump only for package @nativescript-community/ui-share-file
