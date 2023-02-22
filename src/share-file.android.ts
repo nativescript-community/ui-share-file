@@ -1,3 +1,4 @@
+import { Utils } from '@nativescript/core';
 import { AndroidActivityResultEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
 import { File, Folder, path } from '@nativescript/core/file-system';
 
@@ -8,6 +9,7 @@ export class ShareFile {
             return new Promise((resolve, reject) => {
                 try {
                     const intent = new android.content.Intent();
+                    const context = Utils.android.getApplicationContext();
                     // const map = android.webkit.MimeTypeMap.getSingleton();
                     // const mimeType = map.getMimeTypeFromExtension(this.fileExtension(path));
                     if (args.dontGrantReadUri !== true) {
@@ -15,12 +17,12 @@ export class ShareFile {
                     }
                     if (Array.isArray(args.path)) {
                         const uris = new java.util.ArrayList();
-                        args.path.forEach((p) => uris.add(this._getUriForPath(p, this.fileName(p), androidApp.context)));
+                        args.path.forEach((p) => uris.add(this._getUriForPath(p, this.fileName(p), context)));
                         intent.putParcelableArrayListExtra(android.content.Intent.EXTRA_STREAM, uris);
                         intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
                     } else {
                         const path = args.path;
-                        const uri = this._getUriForPath(path, this.fileName(path), androidApp.context);
+                        const uri = this._getUriForPath(path, this.fileName(path), context);
                         intent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
                         intent.setAction(android.content.Intent.ACTION_SEND);
                     }
@@ -133,18 +135,12 @@ export class ShareFile {
         return cacheFileName;
     }
     _cleanAttachmentFolder() {
-        if (androidApp.context) {
-            const dir = androidApp.context.getExternalCacheDir();
+        const context = Utils.android.getApplicationContext();
+        if (context) {
+            const dir = context.getExternalCacheDir();
             const storage = path.join(dir.toString(), 'filecomposer');
             const cacheFolder = Folder.fromPath(storage);
             cacheFolder.clear();
         }
-    }
-    toStringArray(arg) {
-        const arr = java.lang.reflect.Array.newInstance(java.lang.String.class, arg.length);
-        for (let i = 0; i < arg.length; i++) {
-            arr[i] = arg[i];
-        }
-        return arr;
     }
 }

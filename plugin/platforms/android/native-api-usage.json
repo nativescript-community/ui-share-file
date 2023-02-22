@@ -1,0 +1,12 @@
+{
+    "uses":[
+        "android.content:Intent",
+        "java.util:ArrayList",
+        "android.os:StrictMode.VmPolicy.Builder",
+        "android.os:StrictMode.VmPolicy",
+        "android.os:StrictMode",
+        "androidx.core.content:FileProvider",
+        "android.net:Uri",
+        "android.util:Base64"
+    ]
+}
