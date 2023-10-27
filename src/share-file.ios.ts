@@ -1,5 +1,5 @@
 import { ShareOptions } from '@nativescript-community/ui-share-file';
-import { Application } from '@nativescript/core';
+import { Application, Utils } from '@nativescript/core';
 
 // we need to store both the controller and the delegate.
 // UIDocumentInteractionController is not retained by iOS
@@ -43,7 +43,10 @@ export class ShareFile {
                 const controller = UIDocumentInteractionController.interactionControllerWithURL(url);
                 controller.UTI = args?.type || 'public.data, public.content';
                 controller.name = args.title;
-                const presentingController = Application.ios.rootController;
+                // attempt to use the visible view controller to support modals and such, if not fall back to root
+                let presentingController = Utils.ios.getVisibleViewController(Application.ios.rootController);
+                if (!presentingController) presentingController = Application.ios.rootController
+                
                 const delegate = UIDocumentInteractionControllerDelegateImpl.new().initWithOwnerController(this, presentingController);
                 controller.delegate = delegate;
                 let rect;
