@@ -1,6 +1,5 @@
-import { Utils } from '@nativescript/core';
-import { AndroidActivityResultEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
-import { File, Folder, path } from '@nativescript/core/file-system';
+import { Application, File, Folder, Utils, path } from '@nativescript/core';
+import { AndroidActivityResultEventData } from '@nativescript/core/application';
 
 const REQUEST_CODE = 2343;
 export class ShareFile {
@@ -8,23 +7,24 @@ export class ShareFile {
         if (args.path) {
             return new Promise((resolve, reject) => {
                 try {
-                    const intent = new android.content.Intent();
+                    const Intent = android.content.Intent;
+                    const intent = new Intent();
                     const context = Utils.android.getApplicationContext();
                     // const map = android.webkit.MimeTypeMap.getSingleton();
                     // const mimeType = map.getMimeTypeFromExtension(this.fileExtension(path));
                     if (args.dontGrantReadUri !== true) {
-                        intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     }
                     if (Array.isArray(args.path)) {
                         const uris = new java.util.ArrayList();
                         args.path.forEach((p) => uris.add(this._getUriForPath(p, this.fileName(p), context)));
-                        intent.putParcelableArrayListExtra(android.content.Intent.EXTRA_STREAM, uris);
-                        intent.setAction(android.content.Intent.ACTION_SEND_MULTIPLE);
+                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                     } else {
                         const path = args.path;
                         const uri = this._getUriForPath(path, this.fileName(path), context);
-                        intent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
-                        intent.setAction(android.content.Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_STREAM, uri);
+                        intent.setAction(Intent.ACTION_SEND);
                     }
 
                     const builder = new android.os.StrictMode.VmPolicy.Builder();
@@ -32,16 +32,16 @@ export class ShareFile {
 
                     intent.setType(args?.type || '*/*');
 
-                    const activity = androidApp.foregroundActivity || androidApp.startActivity;
+                    const activity = Application.android.startActivity;
 
                     const onActivityResultHandler = (data: AndroidActivityResultEventData) => {
-                        androidApp.off(AndroidApplication.activityResultEvent, onActivityResultHandler);
+                        Application.android.off(Application.android.activityResultEvent, onActivityResultHandler);
                         if (data.requestCode === REQUEST_CODE) {
                             resolve(data.resultCode);
                         }
                     };
-                    androidApp.on(AndroidApplication.activityResultEvent, onActivityResultHandler);
-                    activity.startActivityForResult(android.content.Intent.createChooser(intent, args.title || 'Open file:'), REQUEST_CODE);
+                    Application.android.on(Application.android.activityResultEvent, onActivityResultHandler);
+                    activity.startActivityForResult(Intent.createChooser(intent, args.title || 'Open file:'), REQUEST_CODE);
                 } catch (e) {
                     reject(e);
                 }
@@ -62,7 +62,7 @@ export class ShareFile {
     _getUriForPath(filePath, fileName, ctx) {
         try {
             const file = new java.io.File(filePath);
-            return androidx.core.content.FileProvider.getUriForFile(androidApp.foregroundActivity || androidApp.startActivity, androidApp.packageName + '.provider', file);
+            return androidx.core.content.FileProvider.getUriForFile(Application.android.startActivity, Utils.android.getPackageName() + '.provider', file);
         } catch (err) {
             console.error(err);
         }
@@ -84,7 +84,7 @@ export class ShareFile {
         const absPath = filePath.replace('file://', '');
         const file = new java.io.File(absPath);
         if (!file.exists()) {
-            console.log('File not found: ' + file.getAbsolutePath());
+            console.error('File not found: ' + file.getAbsolutePath());
             return null;
         } else {
             return android.net.Uri.fromFile(file);
@@ -93,7 +93,7 @@ export class ShareFile {
     _getUriForAssetPath(filePath, fileName, ctx) {
         filePath = filePath.replace('file://', '/');
         if (!File.exists(filePath)) {
-            console.log('File does not exist: ' + filePath);
+            console.error('File does not exist: ' + filePath);
             return null;
         }
         const localFile = File.fromPath(filePath);
@@ -112,7 +112,7 @@ export class ShareFile {
         try {
             bytes = android.util.Base64.decode(resData, 0);
         } catch (ex) {
-            console.log('Invalid Base64 string: ' + resData);
+            console.error('Invalid Base64 string: ' + resData);
             return android.net.Uri.EMPTY;
         }
         const cacheFileName = this._writeBytesToFile(ctx, fileName, bytes);
@@ -121,7 +121,7 @@ export class ShareFile {
     _writeBytesToFile(ctx, fileName, contents) {
         const dir = ctx.getExternalCacheDir();
         if (dir === null) {
-            console.log('Missing external cache dir');
+            console.error('Missing external cache dir');
             return null;
         }
         let cacheFileName = path.join(dir.toString(), 'filecomposer', fileName);
