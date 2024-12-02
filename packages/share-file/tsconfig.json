@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../../src/share-file",
+        "outDir": "./"
+    },
+    "include": ["../../src/share-file/**/*", "../../references.d.ts", "../../tools/references.d.ts", "../../src/references.d.ts"],
+    "exclude": ["../../src/share-file/angular/**"],
+    "references": [
+        {
+            //Need for tsc
+            "path": "../../tsconfig.vue3.json"
+        }
+    ]
+}

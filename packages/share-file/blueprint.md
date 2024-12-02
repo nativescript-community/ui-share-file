@@ -1,20 +1,19 @@
-# Nativescript Share File
+{{ load:../../tools/readme/edit-warning.md }}
+{{ template:title }}
+{{ template:badges }}
+{{ template:description }}
 
-Send/Share files to other apps.
+| <img src="https://raw.githubusercontent.com/nativescript-community/ui-lottie/master/preview/preview-ios.png?raw=true" height="500" /> |
+| <img src="https://raw.githubusercontent.com/nativescript-community/ui-lottie/master/preview/preview-android.png?raw=true" height="500" /> |
+| --- | ----------- |
+| iOS Demo | Android Demo |
 
-Android Intent, IOS InteractionController:
-
-<img src="https://github.com/nativescript-community/ui-share-file/blob/master/preview/preview-android.png?raw=true" width="250"> .   <img src="https://github.com/nativescript-community/ui-share-file/blob/master/preview/preview-ios.png?raw=true" width="250">
-
-
+{{ template:toc }}
 
 ## Installation
+Run the following command from the root of your project:
 
-Install the plugin in your app.
-
-~~~
-npm install @nativescript-community/ui-share-file
-~~~
+`ns plugin add {{ pkg.name }}`
 
 ## Usage 
 
@@ -90,3 +89,6 @@ Opening animation for iOS devices.
 
 `Boolean`: (Optional) 
 Default: `false`.
+
+{{ load:../../tools/readme/demos-and-development.md }}
+{{ load:../../tools/readme/questions.md }}
